@@ -6,11 +6,15 @@
 #define PROJECT_ARGUMENTPARSER_H
 
 
+#include <vector>
 
 class ArgumentParser {
-
+    std::vector<char> _arguments;
+    std::string filename;
+public:
+    ArgumentParser(int argc, char** argv);
+    bool isArg(char arg)const;
 };
-
 
 
 #endif //PROJECT_ARGUMENTPARSER_H
