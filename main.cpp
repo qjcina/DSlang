@@ -6,8 +6,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "utils/Constants.h"
 #include "utils/ArgumentParser.h"
-#include "utils/Settings.h"
 #include "vm/VirtualMachine.h"
 #include "compiler/Compiler.h"
 
@@ -36,7 +36,8 @@ int main(int argc, char** argv){
         printUsage(argv[0]);
     if(args->isArg('c'))
         Compiler::placeholder();
-    const Settings* settings = new Settings(args);
+    if(args->isArg('v'))
+        std::cout<<"Version: "<<VERSION_MAJOR<<"."<<VERSION_MINOR<<"."<<VERSION_GIT<<std::endl;
     VirtualMachine* vm;
     if(args->isArg('i'))
         vm = new VirtualMachine();
