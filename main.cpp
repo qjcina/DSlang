@@ -11,14 +11,28 @@
 #include "vm/VirtualMachine.h"
 #include "compiler/Compiler.h"
 
+[[ noreturn ]] void printUsage(char* name){
+    std::cout<<"Usage: \n"
+             << name <<" -f<filename>\n"
+             << "Use: -c for placeholder program\n"
+             << "     -C for compiling from vm asm\n"
+             << "     -i basic interactive mode\n"
+             << "     -h for help\n"
+             << "Example: " << name << " -fin.asm -C";
+    exit(-2);
+
+}
+
 int main(int argc, char** argv){
     ArgumentParser* args = nullptr;
     try {
         args = new ArgumentParser(argc, argv);
     } catch (std::invalid_argument& e){
         std::cout<<"Invalid argument! Arg: "<< e.what() <<std::endl;
-        exit(-2);
+        printUsage(argv[0]);
     }
+    if(args->isArg('c'))
+        printUsage(argv[0]);
     if(args->isArg('c'))
         Compiler::placeholder();
     //const Settings* settings = new Settings(args);
