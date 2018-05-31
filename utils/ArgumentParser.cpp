@@ -19,10 +19,14 @@ ArgumentParser::ArgumentParser(int argc, char **argv) {
         else
             throw std::invalid_argument(argv[i]);
     }
-    if(filename.size()==0)
-        filename = std::string("in.dc");
+    if(filename.empty())
+        filename = std::string("in.ds");
 }
 
 bool ArgumentParser::isArg(char arg)const {
     return std::find(_arguments.begin(), _arguments.end(), arg)!=_arguments.end();
+}
+
+std::string ArgumentParser::getFilename() {
+    return this->filename;
 }

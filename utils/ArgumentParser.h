@@ -14,6 +14,7 @@ class ArgumentParser {
 public:
     ArgumentParser(int argc, char** argv);
     bool isArg(char arg)const;
+    std::string getFilename();
 };
 
 
