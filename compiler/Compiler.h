@@ -15,8 +15,8 @@ class Compiler {
 public:
     static void placeholder();
     static std::string getLine(Commands command, std::vector<std::bitset<64>> data);
-
     static std::stringstream fileToBytes(std::ifstream& input);
+    static unsigned long hashVariable(std::string var);
 };
 
 

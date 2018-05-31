@@ -64,3 +64,10 @@ std::string Compiler::getLine(Commands command, std::vector<std::bitset<64>> dat
     line << "\n";
     return line.str();
 }
+
+unsigned long Compiler::hashVariable(std::string var) {
+    unsigned long hash = 5381;
+    for(auto character : var)
+        hash = ((hash<<5)+hash)+character;
+    return hash;
+}
