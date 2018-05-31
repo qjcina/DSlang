@@ -32,7 +32,7 @@ int main(int argc, char** argv){
         std::cout<<"Invalid argument! Arg: "<< e.what() <<std::endl;
         printUsage(argv[0]);
     }
-    if(args->isArg('c'))
+    if(args->isArg('h'))
         printUsage(argv[0]);
     if(args->isArg('c'))
         Compiler::placeholder();
