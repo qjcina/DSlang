@@ -33,6 +33,7 @@ int VirtualMachine::run() {
     return 0;
 }
 
+
 VirtualMachine::VirtualMachine(std::string const &filename, bool run) {
     lineNumber = 1;
     inputStream = new std::ifstream(filename);
@@ -68,6 +69,17 @@ void VirtualMachine::action(std::vector<long unsigned> const &line) {
     if(line.empty())
         return;
     switch (line.at(0)) {
+        case Commands::GEC:
+            getCachePointer();
+            break;
+        case Commands::SVM:
+        case Commands::RVM:
+            handleMemory((Commands) line.at(0), line.at(1));
+            break;
+        case Commands::SVC:
+        case Commands::RVC:
+            handleCache((Commands) line.at(0), line.at(1));
+            break;
         case Commands::DUB:
             valsStack.push(valsStack.top());
             break;
@@ -98,6 +110,41 @@ void VirtualMachine::action(std::vector<long unsigned> const &line) {
             exit(0);
         default:
             printError("Command error");
+    }
+}
+
+void VirtualMachine::getCachePointer(){
+    for (int i = 0; i < 128; ++i) {
+        if(cache[i] == nullptr){
+            valsStack.push(new Element(i,Element::Types::smallInt));
+            return;
+            }
+    }
+    valsStack.push(new Element(128,Element::Types::smallInt));
+}
+
+void VirtualMachine::handleMemory(Commands command, long unsigned variableHash){
+    if(command == Commands::SVM){
+        Element* var = popStack();
+        memory.emplace(std::make_pair(variableHash, var));
+    } else {
+        auto data = memory.find(variableHash);
+        valsStack.push(data->second);
+        memory.erase(data);
+    }
+}
+
+void VirtualMachine::handleCache(Commands command, long unsigned address){
+    if(address>=128){
+        printError("Cache error");
+        return;
+    }
+    if(command == Commands::SVC){
+        Element* var = popStack();
+        cache[address] = var;
+    } else {
+        valsStack.push(cache[address]);
+        cache[address] = nullptr;
     }
 }
 
