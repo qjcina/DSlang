@@ -18,6 +18,7 @@
              << "     -C for compiling from vm asm\n"
              << "     -i basic interactive mode\n"
              << "     -h for help\n"
+             << "     -v for version\n"
              << "Example: " << name << " -fin.asm -C";
     exit(-2);
 

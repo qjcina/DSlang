@@ -20,7 +20,7 @@ ArgumentParser::ArgumentParser(int argc, char **argv) {
             throw std::invalid_argument(argv[i]);
     }
     if(filename.empty())
-        filename = std::string("in.ds");
+        throw std::invalid_argument("f");
 }
 
 bool ArgumentParser::isArg(char arg)const {
