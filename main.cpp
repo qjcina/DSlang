@@ -36,7 +36,7 @@ int main(int argc, char** argv){
         printUsage(argv[0]);
     if(args->isArg('c'))
         Compiler::placeholder();
-    //const Settings* settings = new Settings(args);
+    const Settings* settings = new Settings(args);
     VirtualMachine* vm;
     if(args->isArg('i'))
         vm = new VirtualMachine();
