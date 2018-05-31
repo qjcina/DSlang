@@ -15,6 +15,11 @@ JGE _line _val        //jumps to line when top of stack is greater or equal
 JLS _line _val        //jumps to line when top of stack is lesser
 JLE _line _val        //jumps to line when top of stack is lesser or equal
 DUB                   //doubles top of stack
+SVM _hash             //saves variable to memory
+RVM _hash             //reads variable from memory
+SVC _pos              //saves variable to cache memory address
+RVM _pos              //reads variable from cache memory address
+GEC                   //pushes first available cache address to stack 
 RRR                   //exits program
 ```
 Example:
