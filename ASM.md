@@ -2,6 +2,7 @@
 Basic operations:
 ```
 PUS _var              //pushes variable to stack
+PUS _var _type        //pushes variable to stack as type (0 - integer, 1 - floating point)
 POS _var              //pops top value from stack to variable
 ADD                   //adds 2 values from stack
 SUB                   //substracts 2 values from stack
@@ -22,7 +23,7 @@ RVM _pos              //reads variable from cache memory address
 GEC                   //pushes first available cache address to stack 
 RRR                   //exits program
 ```
-Example:
+Examples:
 ```
 PUS 1       //push 1
 PUS 2       //push 2
@@ -37,3 +38,10 @@ ADD         //add 9+2
 POP         //pop top of stack (to stdout)
 RRR         //exit program
 ```
+```
+PUS 3FF0000000000000 1  //push 1 as floating point
+PUS 4000000000000000 1  //push 2 as floating point
+MUL                     //multiply
+POP
+CST 0                   //cast to integer
+POP
