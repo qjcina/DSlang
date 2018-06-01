@@ -4,10 +4,10 @@
 
 #include "Element.h"
 
-Element::Element(std::bitset<64> value, Element::Types type):
+Element::Element(unsigned long long value, Element::Types type):
         val(value), type(type) {
-
 }
+
 
 std::bitset<64> Element::getVal() {
     return val;
@@ -16,3 +16,17 @@ std::bitset<64> Element::getVal() {
 Element::Types Element::getType() {
     return this->type;
 }
+
+double Element::getFloat() {
+    return *reinterpret_cast<double *>(&val);
+}
+
+long long Element::getInteger() {
+    return *reinterpret_cast<long long *>(&val);
+}
+
+
+
+
+
+

@@ -19,15 +19,15 @@
 int VirtualMachine::run() {
     std::string line;
     while (std::getline((*inputStream), line)) {
-        long unsigned readValue;
+        unsigned long long readValue;
         std::stringstream lineStream(line);
-        std::vector<long unsigned> lineValues;
+        std::vector<unsigned long long> lineValues;
         while (lineStream >> std::hex >> readValue) {
             lineValues.push_back(readValue);
         }
         action(lineValues);
         lineNumber++;
-        if(line.empty())
+        if (line.empty())
             break;
     }
     return 0;
@@ -44,7 +44,7 @@ VirtualMachine::VirtualMachine(std::string const &filename, bool run) {
         this->run();
 }
 
-VirtualMachine::VirtualMachine(std::istream* input, bool run) {
+VirtualMachine::VirtualMachine(std::istream *input, bool run) {
     lineNumber = 1;
     inputStream = input;
     if (run)
@@ -60,13 +60,13 @@ VirtualMachine::VirtualMachine(bool run) {
 
 void VirtualMachine::printError(std::string error) {
     std::cout << "Error: " << error;
-    if (lineNumber+codeLine >= 0)
-        std::cout << " at line " << (codeLine == 0? lineNumber:codeLine);
+    if (lineNumber + codeLine >= 0)
+        std::cout << " at line " << (codeLine == 0 ? lineNumber : codeLine);
     std::cout << std::endl;
 }
 
-void VirtualMachine::action(std::vector<long unsigned> const &line) {
-    if(line.empty())
+void VirtualMachine::action(std::vector<unsigned long long> const &line) {
+    if (line.empty())
         return;
     switch (line.at(0)) {
         case Commands::GEC:
@@ -101,10 +101,13 @@ void VirtualMachine::action(std::vector<long unsigned> const &line) {
             operation((Commands) line.at(0));
             break;
         case Commands::POP:
-            std::cout << valsStack.top()->getVal().to_ullong();
+            std::cout <<
+                      (valsStack.top()->getType()==Element::Types::Float64?
+                       valsStack.top()->getFloat() : valsStack.top()->getInteger())
+                      << "\n";
             break;
         case Commands::PUS:
-            pushStack(line.at(1), Element::Types::smallInt);
+            handlePush(line);
             break;
         case Commands::RRR:
             exit(0);
@@ -113,19 +116,30 @@ void VirtualMachine::action(std::vector<long unsigned> const &line) {
     }
 }
 
-void VirtualMachine::getCachePointer(){
-    for (int i = 0; i < 128; ++i) {
-        if(cache[i] == nullptr){
-            valsStack.push(new Element(i,Element::Types::smallInt));
-            return;
-            }
+void VirtualMachine::handlePush(const std::vector<unsigned long long> &line) {
+    unsigned type;
+    try {
+        type = (unsigned int) line.at(2);
+    } catch (std::out_of_range &e) {
+        type = 0;
     }
-    valsStack.push(new Element(128,Element::Types::smallInt));
+    pushStack(line.at(1), static_cast<Element::Types>(type));
+
 }
 
-void VirtualMachine::handleMemory(Commands command, long unsigned variableHash){
-    if(command == Commands::SVM){
-        Element* var = popStack();
+void VirtualMachine::getCachePointer() {
+    for (int i = 0; i < 128; ++i) {
+        if (cache[i] == nullptr) {
+            pushStack(i, Element::Types::Int64);
+            return;
+        }
+    }
+    pushStack(128, Element::Types::Int64);
+}
+
+void VirtualMachine::handleMemory(Commands command, unsigned long long variableHash) {
+    if (command == Commands::SVM) {
+        Element *var = popStack();
         memory.emplace(std::make_pair(variableHash, var));
     } else {
         auto data = memory.find(variableHash);
@@ -134,13 +148,13 @@ void VirtualMachine::handleMemory(Commands command, long unsigned variableHash){
     }
 }
 
-void VirtualMachine::handleCache(Commands command, long unsigned address){
-    if(address>=128){
+void VirtualMachine::handleCache(Commands command, unsigned long long address) {
+    if (address >= 128) {
         printError("Cache error");
         return;
     }
-    if(command == Commands::SVC){
-        Element* var = popStack();
+    if (command == Commands::SVC) {
+        Element *var = popStack();
         cache[address] = var;
     } else {
         valsStack.push(cache[address]);
@@ -148,25 +162,37 @@ void VirtualMachine::handleCache(Commands command, long unsigned address){
     }
 }
 
-void VirtualMachine::jumpIf(Commands command, unsigned long line, const unsigned long & condition){
+void VirtualMachine::jumpIf(Commands command, unsigned long long line, const unsigned long long &condition) {
     long long top = popStack()->getVal().to_ullong();
-    switch (command){
-        case JEQ: if(top==condition) jump(line); break;
-        case JNE: if(top==condition) jump(line); break;
-        case JGR: if(top==condition) jump(line); break;
-        case JGE: if(top==condition) jump(line); break;
-        case JLS: if(top==condition) jump(line); break;
-        case JLE: if(top==condition) jump(line); break;
+    switch (command) {
+        case JEQ:
+            if (top == condition) jump(line);
+            break;
+        case JNE:
+            if (top == condition) jump(line);
+            break;
+        case JGR:
+            if (top == condition) jump(line);
+            break;
+        case JGE:
+            if (top == condition) jump(line);
+            break;
+        case JLS:
+            if (top == condition) jump(line);
+            break;
+        case JLE:
+            if (top == condition) jump(line);
+            break;
     }
 }
 
-void VirtualMachine::jump(unsigned long line){
+void VirtualMachine::jump(unsigned long long line) {
     --line;
     try {
         int seek = seekMap.at(static_cast<const int &>(line));
         inputStream->seekg(seek);
         lineNumber = line;
-    } catch(std::out_of_range& e) {
+    } catch (std::out_of_range &e) {
         if (line < lineNumber) {
             inputStream->seekg(std::ios::beg);
             lineNumber = 1;
@@ -189,32 +215,59 @@ Element *VirtualMachine::popStack() {
     return var;
 }
 
-void VirtualMachine::pushStack(long unsigned arg, Element::Types type) {
-    valsStack.push(new Element(arg, type));
+template<typename T>
+void VirtualMachine::pushStack(T arg, Element::Types type) {
+    valsStack.push(
+            new Element(
+                    Element::cast<T>(arg), type
+            )
+    );
 }
 
 void VirtualMachine::operation(Commands type) {
     Element *a = popStack(), *b = popStack();
-    if (a->getType() == b->getType() && a->getType() == Element::Types::smallInt) {
+    if (a->getType() == b->getType() && a->getType() == Element::Types::Int64) {
         long long val = 0;
         switch (type) {
             case ADD:
-                val = a->getVal().to_ullong() + b->getVal().to_ullong();
+                val = a->getInteger() + b->getInteger();
                 break;
             case SUB:
-                val = a->getVal().to_ullong() - b->getVal().to_ullong();
+                val = a->getInteger() - b->getInteger();
                 break;
             case MUL:
-                val = a->getVal().to_ullong() * b->getVal().to_ullong();
+                val = a->getInteger() * b->getInteger();
                 break;
             case DIV:
-                val = a->getVal().to_ullong() / b->getVal().to_ullong();
+                val = a->getInteger() / b->getInteger();
                 break;
             default:
                 printError("Operation error");
         }
-        valsStack.push(new Element(val, Element::Types::smallInt));
+        pushStack(val, Element::Types::Int64);
+    } else if (a->getType() == b->getType() && a->getType() == Element::Types::Float64) {
+        double val = 0;
+        switch (type) {
+            case ADD:
+                val = a->getFloat() + b->getFloat();
+                break;
+            case SUB:
+                val = a->getFloat() - b->getFloat();
+                break;
+            case MUL:
+                val = a->getFloat() * b->getFloat();
+                break;
+            case DIV:
+                val = a->getFloat() / b->getFloat();
+                break;
+            default:
+                printError("Operation error");
+        }
+        pushStack(Element::cast<double>(val), Element::Types::Float64);
+    } else {
+        printError("Incompatible types");
     }
+
     delete a;
     delete b;
 

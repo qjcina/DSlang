@@ -8,23 +8,24 @@
 
 #include <bitset>
 
-
 class Element {
 public:
     enum Types{
-        smallInt
+        Int64,Float64
     };
-
-    Element(std::bitset<64> value, Element::Types type);
-
 private:
-
     std::bitset<64> val;
-    Types const type;
+    Types type;
 public:
+    Element(unsigned long long value, Element::Types type);
     std::bitset<64> getVal();
-
     Types getType();
+    double getFloat();
+    long long getInteger();
+    template <typename T>
+    static unsigned long long cast(T value){
+        return *reinterpret_cast<unsigned long long*>(&value);
+    };
 };
 
 

@@ -43,7 +43,11 @@ std::stringstream Compiler::fileToBytes(std::ifstream& input){
                 first = false;
                 continue;
             }
-            values.emplace_back(std::stoi(value));
+            std::stringstream ssValue;
+            ssValue << std::hex << value;
+            unsigned long long data;
+            ssValue >> data;
+            values.emplace_back(data);
         }
         out<< getLine((Commands) command, values);
     }
