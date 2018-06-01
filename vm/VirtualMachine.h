@@ -44,7 +44,7 @@ public:
     int run();
 
 
-
+    void handleCast(unsigned long long int format);
 };
 
 

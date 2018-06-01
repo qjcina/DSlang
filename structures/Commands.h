@@ -26,6 +26,7 @@ enum Commands{
     SVC, //SAVE VARIABLE TO CACHE
     RVC, //READ VARIABLE FROM CACHE
     GEC, //GET EMPTY CACHE ADDRESS
+    CST, //CAST FORMATS
     RRR = 0xFF
 };
 #include <algorithm>
@@ -49,7 +50,9 @@ class CommandsUtils {
                                                "SVM",
                                                "RVM",
                                                "SVC",
-                                               "RVC"
+                                               "RVC",
+                                               "GEC",
+                                               "CST",
 
     };
 public:

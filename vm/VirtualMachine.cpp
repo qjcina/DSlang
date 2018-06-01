@@ -69,6 +69,9 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
     if (line.empty())
         return;
     switch (line.at(0)) {
+        case Commands::CST:
+            handleCast(line.at(1));
+            break;
         case Commands::GEC:
             getCachePointer();
             break;
@@ -114,6 +117,10 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
         default:
             printError("Command error");
     }
+}
+
+void VirtualMachine::handleCast(unsigned long long format){
+    valsStack.top()->castTo(static_cast<Element::Types>(format));
 }
 
 void VirtualMachine::handlePush(const std::vector<unsigned long long> &line) {

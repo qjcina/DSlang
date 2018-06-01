@@ -16,11 +16,14 @@ public:
 private:
     std::bitset<64> val;
     Types type;
+    void toFloat();
+    void toInteger();
 public:
     Element(unsigned long long value, Element::Types type);
     std::bitset<64> getVal();
     Types getType();
     double getFloat();
+    void castTo(Element::Types type);
     long long getInteger();
     template <typename T>
     static unsigned long long cast(T value){
