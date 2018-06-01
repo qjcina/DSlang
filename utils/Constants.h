@@ -10,7 +10,7 @@
 #include "version.h"
 #define VERSION_GIT     GIT_COMMIT_HASH
 #define VERSION_MAJOR   0
-#define VERSION_MINOR   0
+#define VERSION_MINOR   1
 #endif //PROJECT_CONSTANTS_H
 
 #pragma clang diagnostic pop
