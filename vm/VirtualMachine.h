@@ -37,14 +37,12 @@ class VirtualMachine {
     void handleMemory(Commands command, unsigned long long variableHash);
     void getCachePointer();
     void handlePush(const std::vector<unsigned long long> &line);
+    void handleCast(unsigned long long int format);
 public:
     explicit VirtualMachine(bool run = false);
     explicit VirtualMachine(std::istream *input, bool run= false);
     explicit VirtualMachine(std::string const& filename, bool run = false);
     int run();
-
-
-    void handleCast(unsigned long long int format);
 };
 
 
