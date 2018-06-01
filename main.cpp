@@ -19,7 +19,7 @@
              << "     -i basic interactive mode\n"
              << "     -h for help\n"
              << "     -v for version\n"
-             << "Example: " << name << " -fin.asm -C";
+             << "Example: " << name << " -fin.asm -C\n";
     exit(-2);
 
 }
