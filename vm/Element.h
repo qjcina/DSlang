@@ -29,6 +29,11 @@ public:
     static unsigned long long cast(T value){
         return *reinterpret_cast<unsigned long long*>(&value);
     };
+    template <typename T>
+    Element& operator=(const T& val) {
+        this->val = cast<T>(val);
+        return *this;
+    }
 };
 
 

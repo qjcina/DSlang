@@ -105,7 +105,7 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
             break;
         case Commands::POP:
             std::cout <<
-                      (valsStack.top()->getType()==Element::Types::Float64?
+                      (valsStack.top()->getType() == Element::Types::Float64 ?
                        valsStack.top()->getFloat() : valsStack.top()->getInteger())
                       << "\n";
             break;
@@ -119,7 +119,7 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
     }
 }
 
-void VirtualMachine::handleCast(unsigned long long format){
+void VirtualMachine::handleCast(unsigned long long format) {
     valsStack.top()->castTo(static_cast<Element::Types>(format));
 }
 
@@ -232,51 +232,46 @@ void VirtualMachine::pushStack(T arg, Element::Types type) {
 }
 
 void VirtualMachine::operation(Commands type) {
-    Element *a = popStack(), *b = popStack();
+    Element *a = popStack(), *b = valsStack.top();
     if (a->getType() == b->getType() && a->getType() == Element::Types::Int64) {
-        long long val = 0;
         switch (type) {
             case ADD:
-                val = a->getInteger() + b->getInteger();
+                *b = (a->getInteger() + b->getInteger());
                 break;
             case SUB:
-                val = a->getInteger() - b->getInteger();
+                *b = (a->getInteger() - b->getInteger());
                 break;
             case MUL:
-                val = a->getInteger() * b->getInteger();
+                *b = (a->getInteger() * b->getInteger());
                 break;
             case DIV:
-                val = a->getInteger() / b->getInteger();
+                *b = (a->getInteger() / b->getInteger());
                 break;
             default:
                 printError("Operation error");
         }
-        pushStack(val, Element::Types::Int64);
     } else if (a->getType() == b->getType() && a->getType() == Element::Types::Float64) {
-        double val = 0;
         switch (type) {
             case ADD:
-                val = a->getFloat() + b->getFloat();
+                *b = (a->getFloat() + b->getFloat());
                 break;
             case SUB:
-                val = a->getFloat() - b->getFloat();
+                *b = (a->getFloat() - b->getFloat());
                 break;
             case MUL:
-                val = a->getFloat() * b->getFloat();
+                *b = (a->getFloat() * b->getFloat());
                 break;
             case DIV:
-                val = a->getFloat() / b->getFloat();
+                *b = (a->getFloat() / b->getFloat());
                 break;
             default:
                 printError("Operation error");
         }
-        pushStack(Element::cast<double>(val), Element::Types::Float64);
     } else {
         printError("Incompatible types");
     }
 
     delete a;
-    delete b;
 
 }
 
