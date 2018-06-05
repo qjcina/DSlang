@@ -27,6 +27,8 @@ enum Commands{
     RVC, //READ VARIABLE FROM CACHE
     GEC, //GET EMPTY CACHE ADDRESS
     CST, //CAST FORMATS
+    RSI, //READ STANDARD INPUT
+    WSO, //WRITE STANDARD STANDARD
     RRR = 0xFF
 };
 #include <algorithm>
@@ -53,6 +55,8 @@ class CommandsUtils {
                                                "RVC",
                                                "GEC",
                                                "CST",
+                                               "RSI",
+                                               "WSO"
 
     };
 public:

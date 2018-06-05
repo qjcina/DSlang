@@ -20,7 +20,9 @@ SVM _hash             ;saves variable to memory
 RVM _hash             ;reads variable from memory
 SVC _pos              ;saves variable to cache memory address
 RVM _pos              ;reads variable from cache memory address
-GEC                   ;pushes first available cache address to stack 
+GEC                   ;pushes first available cache address to stack
+WSO                   ;writes top of stack to standard output
+RSI                   ;reads from standard input to stack
 RRR                   ;exits program
 ```
 Examples:
@@ -35,14 +37,16 @@ JNE 9 9     ;jump to line 9 when top not equal 9
 RRR         ;exit program
 PUS 2       ;push 2
 ADD         ;add 9+2
-POP         ;pop top of stack (to stdout)
+WSO         ;pop top of stack to stdout
 RRR         ;exit program
 ```
 ```asm
 PUS 40030000006f0500 1 ;push 2 numbers as floats
 PUS 4000000000000000 1
 MUL
-POP
+DUB
+WSO
 CST 0                   ;cast to integer
-POP
+DUB
+WSO
 ```

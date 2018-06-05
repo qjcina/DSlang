@@ -43,6 +43,8 @@ public:
     explicit VirtualMachine(std::istream *input, bool run= false);
     explicit VirtualMachine(std::string const& filename, bool run = false);
     int run();
+
+    void handleStandardIO(Commands command);
 };
 
 

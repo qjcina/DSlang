@@ -69,6 +69,10 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
     if (line.empty())
         return;
     switch (line.at(0)) {
+        case Commands::RSI:
+        case Commands::WSO:
+            handleStandardIO((Commands) line.at(0));
+            break;
         case Commands::CST:
             handleCast(line.at(1));
             break;
@@ -104,10 +108,7 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
             operation((Commands) line.at(0));
             break;
         case Commands::POP:
-            std::cout <<
-                      (valsStack.top()->getType() == Element::Types::Float64 ?
-                       valsStack.top()->getFloat() : valsStack.top()->getInteger())
-                      << "\n";
+            popStack();
             break;
         case Commands::PUS:
             handlePush(line);
@@ -116,6 +117,29 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
             exit(0);
         default:
             printError("Command error");
+    }
+}
+
+void VirtualMachine::handleStandardIO(Commands command) {
+    if (command == Commands::RSI) {
+        std::string read;
+        std::cin >> read;
+        //TODO: Replace with regex
+        if (read.find('.') != std::string::npos) {
+            pushStack(std::stod(read), Element::Types::Float64);
+        } else {
+            printError("I/O Error - Input");
+        }
+    } else {
+        Element *top = popStack();
+        switch (top->getType()) {
+            case Element::Int64:
+                std::cout << top->getInteger();
+                break;
+            case Element::Float64:
+                std::cout << top->getFloat();
+                break;
+        }
     }
 }
 
