@@ -39,18 +39,27 @@ int main(int argc, char** argv){
     if(args->isArg('v'))
         std::cout<<"Version: "<<VERSION_MAJOR<<"."<<VERSION_MINOR<<"."<<VERSION_GIT<<std::endl;
     VirtualMachine* vm;
-    if(args->isArg('i'))
-        vm = new VirtualMachine();
-    else {
-        if(args->isArg('C')){
-            std::ifstream inputStream(args->getFilename());
-            vm = new VirtualMachine(new std::istringstream(Compiler::fileToBytes(inputStream).str()));
-        } else {
-            auto const filename = args->getFilename();
-            vm = new VirtualMachine(filename);
+    if(!args->isArg('r')) {
+        //Standard mode console
+        if (args->isArg('i'))
+            //Interactive mode
+            vm = new VirtualMachine();
+        else {
+            //Compiled mode
+            if (args->isArg('C')) {
+                //Compile DS-asm
+                std::ifstream inputStream(args->getFilename());
+                vm = new VirtualMachine(new std::istringstream(Compiler::fileToBytes(inputStream).str()));
+            } else {
+                //Read bytecode
+                auto const filename = args->getFilename();
+                vm = new VirtualMachine(filename);
+            }
         }
+        vm->run();
+    } else {
+        //TODO UI with interactive commands (reading, compliling etc.)
     }
-    vm->run();
 
     return 0;
 }
