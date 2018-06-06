@@ -18,17 +18,34 @@
  */
 int VirtualMachine::run() {
     std::string line;
+    bool function = false;
     while (std::getline((*inputStream), line)) {
-        unsigned long long readValue;
+        std::string read;
         std::stringstream lineStream(line);
         std::vector<unsigned long long> lineValues;
-        while (lineStream >> std::hex >> readValue) {
+        while (lineStream >> read) {
+            unsigned long long readValue = RRR;
+            try {
+                readValue = std::stoull(read, nullptr, 16);
+            } catch (std::invalid_argument& e){
+                std::cmatch matches;
+                if(std::regex_match(line.c_str(), matches, labelRegex)){
+                    funMap.insert(std::make_pair(std::stoull(std::string(matches[2])), lineNumber));
+                    function = true;
+                    break;
+                }
+            }
             lineValues.push_back(readValue);
         }
-        action(lineValues);
+
+        if(!function)
+            action(lineValues);
+        if(!lineValues.empty() && lineValues.at(0)==Commands::EOF){
+            function = false;
+        }
         lineNumber++;
         if (line.empty())
-            break;
+            continue;
     }
     return 0;
 }
@@ -69,6 +86,13 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
     if (line.empty())
         return;
     switch (line.at(0)) {
+        case Commands::EOF:
+            jump(static_cast<unsigned long long int>(cache[127]->getInteger()));
+            delete cache[127];
+            break;
+        case Commands::SOF:
+            handleFunctionCall(line.at(1));
+            break;
         case Commands::RSI:
         case Commands::WSO:
             handleStandardIO((Commands) line.at(0));
@@ -118,6 +142,11 @@ void VirtualMachine::action(std::vector<unsigned long long> const &line) {
         default:
             printError("Command error");
     }
+}
+
+void VirtualMachine::handleFunctionCall(unsigned long long hash){
+    cache[127] = new Element(lineNumber+2, Element::Types::Int64);
+    jump(funMap.at(hash)+2);
 }
 
 void VirtualMachine::handleStandardIO(Commands command) {
@@ -219,11 +248,11 @@ void VirtualMachine::jumpIf(Commands command, unsigned long long line, const uns
 
 void VirtualMachine::jump(unsigned long long line) {
     --line;
-    try {
-        int seek = seekMap.at(static_cast<const int &>(line));
-        inputStream->seekg(seek);
+        auto search = seekMap.find(static_cast<const int>(line));
+    if(search != seekMap.end()) {
+        inputStream->seekg(search->second);
         lineNumber = line;
-    } catch (std::out_of_range &e) {
+    } else {
         if (line < lineNumber) {
             inputStream->seekg(std::ios::beg);
             lineNumber = 1;

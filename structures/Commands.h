@@ -4,7 +4,9 @@
 
 #ifndef PROJECT_COMMANDS_H
 #define PROJECT_COMMANDS_H
-
+#ifdef EOF
+#undef EOF
+#endif
 enum Commands{
     DUB = 0x01,
     ADD, //ADD
@@ -29,6 +31,8 @@ enum Commands{
     CST, //CAST FORMATS
     RSI, //READ STANDARD INPUT
     WSO, //WRITE STANDARD STANDARD
+    EOF, //END OF FUNCTION
+    SOF, //START OF FUNCTION
     RRR = 0xFF
 };
 #include <algorithm>
@@ -56,7 +60,9 @@ class CommandsUtils {
                                                "GEC",
                                                "CST",
                                                "RSI",
-                                               "WSO"
+                                               "WSO",
+                                               "EOF",
+                                               "SOF"
 
     };
 public:
