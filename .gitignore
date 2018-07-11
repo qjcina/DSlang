@@ -34,4 +34,6 @@
 cmake-build-debug/
 .vs/*
 bin/*
-*.txt
+*.ds
+
+in.txt

@@ -14,7 +14,7 @@
 [[ noreturn ]] void printUsage(char* name){
     std::cout<<"Usage: \n"
              << name <<" -f<filename>\n"
-             << "Use: -c for placeholder program\n"
+             << "Use: -c compliling\n"
              << "     -C for compiling from vm asm\n"
              << "     -i basic interactive mode\n"
              << "     -h for help\n"
@@ -34,8 +34,9 @@ int main(int argc, char** argv){
     }
     if(args->isArg('h'))
         printUsage(argv[0]);
-    if(args->isArg('c'))
-        Compiler::placeholder();
+	if (args->isArg('c')) {
+		auto compilerInstance = new Compiler(args->getFilename());
+	}
     if(args->isArg('v'))
         std::cout<<"Version: "<<VERSION_MAJOR<<"."<<VERSION_MINOR<<"."<<VERSION_GIT<<std::endl;
     VirtualMachine* vm;

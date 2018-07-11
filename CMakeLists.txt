@@ -22,7 +22,9 @@ ${CMAKE_BINARY_DIR}/utils/version.h
 include_directories(${CMAKE_BINARY_DIR}/utils)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/version.h.in ${CMAKE_CURRENT_BINARY_DIR}/version.h @ONLY)
-set(SOURCE_FILES main.cpp utils/ArgumentParser.cpp structures/Commands.h vm/VirtualMachine.cpp vm/VirtualMachine.h compiler/Compiler.cpp compiler/Compiler.h vm/Element.cpp vm/Element.h utils/Regex.h)
+set(SOURCE_FILES main.cpp utils/ArgumentParser.cpp structures/Commands.h vm/VirtualMachine.cpp vm/VirtualMachine.h
+compiler/Compiler.cpp compiler/Compiler.h compiler/Lex.cpp compiler/Lex.h compiler/Token.cpp compiler/Token.h
+vm/Element.cpp vm/Element.h utils/Regex.h)
 if(WIN32)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std:c++17")
 endif(WIN32)

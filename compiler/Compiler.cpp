@@ -88,3 +88,10 @@ unsigned long Compiler::hashVariable(std::string var) {
         hash = ((hash<<5)+hash)+character; // NOLINT
     return hash;
 }
+
+#include "Lex.h"
+
+Compiler::Compiler(std::string filename)
+{
+	auto lex = new Lex(new std::ifstream(filename));
+}
