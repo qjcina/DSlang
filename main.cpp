@@ -49,6 +49,10 @@ int main(int argc, char** argv){
             if (args->isArg('C')) {
                 //Compile DS-asm
                 std::ifstream inputStream(args->getFilename());
+				if (!inputStream.is_open()) {
+					std::cout << "Invalid file! Arg: " << std::endl;
+					printUsage(argv[0]);
+				}
                 vm = new VirtualMachine(new std::istringstream(Compiler::fileToBytes(inputStream).str()));
             } else {
                 //Read bytecode

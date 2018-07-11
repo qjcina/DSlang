@@ -32,3 +32,6 @@
 \.idea/
 
 cmake-build-debug/
+.vs/*
+bin/*
+*.txt
