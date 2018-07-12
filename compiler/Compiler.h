@@ -8,6 +8,8 @@
 
 #include <bitset>
 #include <vector>
+#include <fstream>
+#include "Lex.h"
 #include "../structures/Commands.h"
 
 class Compiler {

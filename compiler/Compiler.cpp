@@ -90,7 +90,7 @@ unsigned long Compiler::hashVariable(std::string var) {
     return hash;
 }
 
-#include "Lex.h"
+#include "Parser.h"
 
 Compiler::Compiler(std::string filename)
 {
@@ -103,7 +103,10 @@ void Compiler::compile() {
 	}
 	catch (Lex::SyntaxError& e) {
 		std::cout << e.what() << std::endl;
+		delete lex;
 		return;
 	}
 	delete lex;
+	Parser parser(tokens);
+	parser.parse();
 }
