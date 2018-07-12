@@ -20,9 +20,11 @@ public:
     static unsigned long hashVariable(std::string var);
 //COMPILER LOGIC
 private:
+	Lex * lex;
 	std::ifstream input;
 public:
 	Compiler(std::string filename);
+	void compile();
 };
 
 

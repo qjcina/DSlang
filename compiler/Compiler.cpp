@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include "Compiler.h"
 #include "../structures/Commands.h"
@@ -93,5 +94,16 @@ unsigned long Compiler::hashVariable(std::string var) {
 
 Compiler::Compiler(std::string filename)
 {
-	auto lex = new Lex(new std::ifstream(filename));
+	lex = new Lex(new std::ifstream(filename));
+}
+void Compiler::compile() {
+	std::queue<Token*> tokens;
+	try {
+		tokens = lex->generateTokens();
+	}
+	catch (Lex::SyntaxError& e) {
+		std::cout << e.what() << std::endl;
+		return;
+	}
+	delete lex;
 }

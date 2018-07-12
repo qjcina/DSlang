@@ -3,11 +3,22 @@
 class Token {
 public:
 	enum Type {
-		Integer, Float, Variable, LBracket, RBracket, LBrace, RBrace, Word, Arythmetic
+		Integer, Float, Variable, Special, Word, Arythmetic
 	};
 private:
 	Type type;
-	std::string value;
+	struct valuesCombined {
+		std::string sVal;
+		int iVal;
+		double fVal;
+	} values;
 public:
-	Token(std::string value,Type type);
+	struct ImmutableToken {
+		const Type type;
+		const valuesCombined value;
+		ImmutableToken(Token* token);
+		ImmutableToken() = delete;
+	};
+	ImmutableToken get();
+	Token(std::string value, Type type);
 };
