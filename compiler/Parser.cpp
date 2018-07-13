@@ -1,18 +1,20 @@
 #include "Parser.h"
 #include "Compiler.h"
+#include "../structures/Commands.h"
 
 Parser::Parser(std::queue<Token*> tokens)
 {
 	this->tokens = tokens;
 }
 
-std::stringstream Parser::parse()
+std::string Parser::parse()
 {
 	while (!tokens.empty()) {
 		auto token = popToken();
 		handleFunction(token);
 	}
-	return std::stringstream();
+	collector << "RRR";
+	return collector.str();
 }
 
 Token* Parser::popToken() {
@@ -30,20 +32,31 @@ char Parser::bracketCheck(Token::ImmutableToken token) {
 	return 0;
 }
 
+
+std::vector<Token*> Parser::collectArguments() {
+	std::vector<Token*> arguments;
+	while (!tokens.empty()) {
+		auto token = popToken();
+		if (bracketCheck(token->get()) == 1) {
+			break;
+		}
+		if (token->get().type == Token::Type::Arythmetic) {
+			auto left = arguments.back();
+			arguments.pop_back();
+			handleArythmetic(std::vector<Token*>{left, token, popToken()});
+		}
+		arguments.push_back(token);
+	}
+	return arguments;
+}
+
 bool Parser::handleFunction(Token* token) {
 	if (token->get().type == Token::Word) {
 		auto bracket = popToken()->get();
 		if (bracketCheck(bracket) != -1)
-			throw MissingToken(std::string(1, '('), bracket.value.sVal);
-		std::vector<Token*> arguments;
-		while (!tokens.empty()) {
-			auto token = popToken();
-			if (bracketCheck(token->get()) == 1) {
-				break;
-			}
-			arguments.push_back(token);
-		}
+			throw MissingToken(std::string(1, '('), bracket.value.sVal);	
 		handler function = handlers.at(token->get().value.sVal);
+		auto arguments = collectArguments();
 		(this->*function)(arguments);
 	}
 	else {
@@ -51,15 +64,34 @@ bool Parser::handleFunction(Token* token) {
 	}
 }
 
-void Parser::handlePrint(std::vector<Token*> arguments) {
+void Parser::getVariable(Token::ImmutableToken token) {
+	if (token.type == Token::Variable)
+		getVariable(token.value.sVal);
+	else
+		collector << "PUS " << std::hex << token.value.iVal << "\n";
+}
 
+void Parser::getVariable(std::string name) {
+	collector << "RVM " << Compiler::hashVariable(name) << std::endl;
+}
+
+void Parser::handleArythmetic(std::vector<Token*> arguments) {
+	if(arguments.size()>3)
+		throw WrongDeclaration("arythmetic");
+	getVariable(arguments.at(0)->get());
+	getVariable(arguments.at(2)->get());
+	collector << "ADD \n";
+}
+
+void Parser::handlePrint(std::vector<Token*> arguments) {
+	collector << "WSO \n";
 }
 
 void Parser::handleSet(std::vector<Token*> arguments) {
 	if (arguments.size() > 1 || arguments.at(0)->get().type != Token::Type::Integer)
 		throw WrongDeclaration("set");
 	if (modyfingVariable) {
-		collector << "PUS " << arguments.at(0)->get().value.iVal << "\n";
+		collector << "PUS " << std::hex << arguments.at(0)->get().value.iVal << "\n";
 	}
 }
 

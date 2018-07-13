@@ -1,11 +1,13 @@
 #pragma once
 #include <string>
+#include <vector>
 class Token {
 public:
 	enum Type {
 		Integer, Float, Variable, Special, Word, Arythmetic
 	};
 private:
+	const std::vector<char> arythmetic{ '+','-','*','/' };
 	Type type;
 	struct valuesCombined {
 		std::string sVal;

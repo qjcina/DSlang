@@ -34,14 +34,15 @@ int main(int argc, char** argv){
     }
     if(args->isArg('h'))
         printUsage(argv[0]);
-	if (args->isArg('c')) {
-		auto compilerInstance = new Compiler(args->getFilename());
-		compilerInstance->compile();
-	}
+	
     if(args->isArg('v'))
         std::cout<<"Version: "<<VERSION_MAJOR<<"."<<VERSION_MINOR<<"."<<VERSION_GIT<<std::endl;
     VirtualMachine* vm;
-    if(!args->isArg('r')) {
+	if (args->isArg('c')) {
+		auto compilerInstance = new Compiler(args->getFilename());
+		vm = new VirtualMachine(new std::istringstream(compilerInstance->compile().str()));
+		vm->run();
+	} else if(!args->isArg('r')) {
         //Standard mode console
         if (args->isArg('i'))
             //Interactive mode

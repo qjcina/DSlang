@@ -25,7 +25,7 @@ void Compiler::placeholder() {
     file.close();
 }
 
-std::stringstream Compiler::fileToBytes(std::ifstream& input){
+std::stringstream Compiler::fileToBytes(std::istream& input){
     std::string line;
     std::stringstream out;
     while (std::getline(input, line)) {
@@ -96,7 +96,7 @@ Compiler::Compiler(std::string filename)
 {
 	lex = new Lex(new std::ifstream(filename));
 }
-void Compiler::compile() {
+std::stringstream Compiler::compile() {
 	std::queue<Token*> tokens;
 	try {
 		tokens = lex->generateTokens();
@@ -104,9 +104,9 @@ void Compiler::compile() {
 	catch (Lex::SyntaxError& e) {
 		std::cout << e.what() << std::endl;
 		delete lex;
-		return;
+		return std::stringstream("");
 	}
 	delete lex;
 	Parser parser(tokens);
-	parser.parse();
+	return fileToBytes(std::stringstream(parser.parse()));
 }
