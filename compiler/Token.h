@@ -4,7 +4,7 @@
 class Token {
 public:
 	enum Type {
-		Integer, Float, Variable, Special, Word, Arythmetic
+		Integer, Float, Variable, Special, Word, Arythmetic, Stacked
 	};
 private:
 	const std::vector<char> arythmetic{ '+','-','*','/' };

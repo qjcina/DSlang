@@ -40,6 +40,11 @@ std::vector<Token*> Parser::collectArguments() {
 		if (bracketCheck(token->get()) == 1) {
 			break;
 		}
+		if (bracketCheck(token->get()) == -1) {
+			collectArguments();
+			arguments.push_back(new Token("", Token::Stacked));
+			continue;
+		}
 		if (token->get().type == Token::Type::Arythmetic) {
 			auto left = arguments.back();
 			arguments.pop_back();
@@ -70,6 +75,8 @@ bool Parser::handleFunction(Token* token) {
 void Parser::getVariable(Token::ImmutableToken token) {
 	if (token.type == Token::Variable)
 		getVariable(token.value.sVal);
+	else if (token.type == Token::Stacked)
+		return;
 	else
 		collector << "PUS " << std::hex << token.value.iVal << "\n";
 }
