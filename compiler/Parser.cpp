@@ -45,6 +45,9 @@ std::vector<Token*> Parser::collectArguments() {
 			arguments.pop_back();
 			handleArythmetic(std::vector<Token*>{left, token, popToken()});
 		}
+		if (token->get().type == Token::Type::Word) {
+			handleFunction(token);
+		}
 		arguments.push_back(token);
 	}
 	return arguments;
@@ -80,7 +83,21 @@ void Parser::handleArythmetic(std::vector<Token*> arguments) {
 		throw WrongDeclaration("arythmetic");
 	getVariable(arguments.at(0)->get());
 	getVariable(arguments.at(2)->get());
-	collector << "ADD \n";
+	char mark = arguments.at(1)->get().value.sVal[0];
+	switch (mark) {
+	case '+':
+		collector << "ADD\n";
+		break;
+	case '-':
+		collector << "SUB\n";
+		break;
+	case '/':
+		collector << "DIV\n";
+		break;
+	case '*':
+		collector << "MUL\n";
+		break;
+	}
 }
 
 void Parser::handlePrint(std::vector<Token*> arguments) {
