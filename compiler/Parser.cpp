@@ -2,7 +2,7 @@
 #include "Compiler.h"
 #include "../structures/Commands.h"
 
-Parser::Parser(std::queue<Token*> tokens)
+Parser::Parser(std::stack<Token*> tokens)
 {
 	this->tokens = tokens;
 }
@@ -18,7 +18,7 @@ std::string Parser::parse()
 }
 
 Token* Parser::popToken() {
-	auto token = tokens.front();
+	auto token = tokens.top();
 	tokens.pop();
 	return token;
 }

@@ -7,13 +7,14 @@
 #include <sstream>
 #include <map>
 #include <tuple>
+#include <stack>
 
 class Parser {
 	typedef void(Parser::*handler)(std::vector<Token*>);
 
 	std::vector<Token*> nullV;
 
-	std::queue<Token*> tokens;
+	std::stack<Token*> tokens;
 	std::stringstream collector;
 
 	Token * popToken();
@@ -50,7 +51,7 @@ class Parser {
 	void handlePrint(std::vector<Token*> arguments);
 
 public:
-	Parser(std::queue<Token*> tokens);
+	Parser(std::stack<Token*> tokens);
 	std::string parse();
 
 	// Parser exceptions
